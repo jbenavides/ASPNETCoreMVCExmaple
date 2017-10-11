@@ -7,17 +7,11 @@ namespace BethanysPieShop.Models
 {
     public class MockCategoryRepository : ICategoryRepository
     {
-        public IEnumerable<Category> Categories
+        public IEnumerable<Category> Categories => new List<Category>
         {
-            get
-            {
-                return new List<Category>
-                {
-                    new Category{CategoryId = 1, CategoryName = "Fruit pies", Description = "blabla1"},
-                    new Category{CategoryId = 2, CategoryName = "Cheese cakes", Description = "blabla2"},
-                    new Category{CategoryId = 3, CategoryName = "Seasonal pies", Description = "blabla3"},
-                };
-            }
-        }
+            new Category{CategoryId=1, CategoryName="Fruit pies", Description="All-fruity pies"},
+            new Category{CategoryId=2, CategoryName="Cheese cakes", Description="Cheesy all the way"},
+            new Category{CategoryId=3, CategoryName="Seasonal pies", Description="Get in the mood for a seasonal pie"}
+        };
     }
 }

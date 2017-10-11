@@ -6,17 +6,43 @@ using BethanysPieShop.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BethanysPieShop
 {
     public class Startup
     {
+        /*
+         Migrations Commands:
+         1) Add-Migration Initial
+         2) Update-Database
+             
+             */
+        private IConfigurationRoot _configurationRoot;
+
+        public Startup(IHostingEnvironment hostingEnvironment)
+        {
+            _configurationRoot = new ConfigurationBuilder()
+                                    .SetBasePath(hostingEnvironment.ContentRootPath)
+                                    .AddJsonFile("appsettings.json")
+                                    .Build();
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<ICategoryRepository, MockCategoryRepository>();
-            services.AddTransient<IPieRepository, MockPieRepository>();
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(_configurationRoot.GetConnectionString("DefaultConnection")));
+
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IPieRepository, PieRepository>();
+
             services.AddMvc();
+
+            var serviceProvider = services.BuildServiceProvider();
+            var dbContext = serviceProvider.GetService<AppDbContext>();
+            DbInitializer.Seed(dbContext);
         }
        
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
