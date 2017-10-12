@@ -57,7 +57,19 @@ namespace BethanysPieShop
             app.UseStatusCodePages();   // Add support for text only headers for common status codes.
             app.UseStaticFiles(); // Enable the ability for my site to serve static files.
             app.UseSession(); // should go before ...defaultRoute otherwise will not work.
-            app.UseMvcWithDefaultRoute(); // Setup the MVC middleware using the default routing schema.
+            //app.UseMvcWithDefaultRoute(); // Setup the MVC middleware using the default routing schema.
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "categoryfilter",
+                    template: "Pie/{action}/{category?}",
+                    defaults: new { Controller = "Pie", action = "List" });
+
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
